@@ -45,6 +45,20 @@ class AuthorizeNetARB extends AuthorizeNetRequest
         $this->_request_payload .= $subscription->getXml();
         return $this->_sendRequest();
     }
+
+    /**
+     * Create an ARB subscription
+     *
+     * @param AuthorizeNet_Subscription_Request $subscription
+     *
+     * @return AuthorizeNetARB_Response
+     */
+    public function createSubscriptionRequest(AuthorizeNet_Subscription_Request $subscription)
+    {
+        $this->_request_type = "CreateSubscriptionRequest";
+        $this->_request_payload .= $subscription->getXml();
+        return $this->_sendRequest();
+    }
     
     /**
      * Update an ARB subscription
