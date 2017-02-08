@@ -321,6 +321,75 @@ class AuthorizeNet_Subscription
     }
 }
 
+
+/**
+ * A class that contains all fields for an AuthorizeNet ARB Subscription.
+ *
+ * @package    AuthorizeNet
+ * @subpackage AuthorizeNetARB
+ */
+class AuthorizeNet_Subscription_Request
+{
+
+    public $name;
+    public $intervalLength;
+    public $intervalUnit;
+    public $startDate;
+    public $totalOccurrences;
+    public $trialOccurrences;
+    public $amount;
+    public $trialAmount;
+    public $customerProfileId;
+    public $customerPaymentProfileId;
+    public $customerAddressId;
+
+    public function getXml()
+    {
+        $xml = "<subscription>
+    <name>{$this->name}</name>
+    <paymentSchedule>
+        <interval>
+            <length>{$this->intervalLength}</length>
+            <unit>{$this->intervalUnit}</unit>
+        </interval>
+        <startDate>{$this->startDate}</startDate>
+        <totalOccurrences>{$this->totalOccurrences}</totalOccurrences>
+        <trialOccurrences>{$this->trialOccurrences}</trialOccurrences>
+    </paymentSchedule>
+    <amount>{$this->amount}</amount>
+    <trialAmount>{$this->trialAmount}</trialAmount>
+    <profile>
+     <customerProfileId>{$this->customerProfileId}</customerProfileId>
+     <customerPaymentProfileId>{$this->customerPaymentProfileId}</customerPaymentProfileId>
+     <customerAddressId>{$this->customerAddressId}</customerAddressId>
+    </profile>
+</subscription>";
+
+        $xml_clean = "";
+        // Remove any blank child elements
+        foreach (preg_split("/(\r?\n)/", $xml) as $key => $line) {
+            if (!preg_match('/><\//', $line)) {
+                $xml_clean .= $line . "\n";
+            }
+        }
+
+        // Remove any blank parent elements
+        $element_removed = 1;
+        // Recursively repeat if a change is made
+        while ($element_removed) {
+            $element_removed = 0;
+            if (preg_match('/<[a-z]+>[\r?\n]+\s*<\/[a-z]+>/i', $xml_clean)) {
+                $xml_clean = preg_replace('/<[a-z]+>[\r?\n]+\s*<\/[a-z]+>/i', '', $xml_clean);
+                $element_removed = 1;
+            }
+        }
+
+        // Remove any blank lines
+        // $xml_clean = preg_replace('/\r\n[\s]+\r\n/','',$xml_clean);
+        return $xml_clean;
+    }
+}
+
 /**
  * A class that contains all fields for an AuthorizeNet ARB SubscriptionList.
  *
